@@ -1,0 +1,54 @@
+.vsa-item__trigger__icon--is-default {
+  width: 40px;
+  height: 40px;
+  transform: scale(var(--vsa-default-icon-size));
+
+  &::after,
+  &::before {
+    background-color: var(--vsa-text-color);
+    content: "";
+    height: 3px;
+    position: absolute;
+    top: 10px;
+    transition: all ease-in-out 0.13333s;
+    width: 30px;
+  }
+  &::before {
+    left: 0;
+    transform: rotate(45deg) translate3d(8px, 22px, 0);
+    transform-origin: 100%;
+  }
+  &::after {
+    transform: rotate(-45deg) translate3d(-8px, 22px, 0);
+    right: 0;
+    transform-origin: 0%;
+  }
+}
+
+.vsa-item__trigger {
+  $trigger: &;
+
+  &[aria-expanded="true"] {
+    #{$trigger}__icon--is-default::before {
+      transform: rotate(45deg) translate3d(14px, 14px, 0);
+    }
+    #{$trigger}__icon--is-default::after {
+      transform: rotate(-45deg) translate3d(-14px, 14px, 0);
+    }
+  }
+
+  &__icon {
+    display: block;
+    margin-left: auto;
+    position: relative;
+    transition: all ease-in-out 0.2s;
+  }
+
+  &:hover,
+  &:focus {
+    .vsa-item__trigger__icon--is-default::before,
+    .vsa-item__trigger__icon--is-default::after {
+      background-color: var(--vsa-bg-color);
+    }
+  }
+}

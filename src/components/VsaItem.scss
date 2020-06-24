@@ -1,0 +1,13 @@
+.vsa-item {
+  $item: &;
+
+  &:not(:last-of-type) {
+    border-bottom: var(--vsa-border);
+  }
+
+  &__heading {
+    #{$item}--is-active & {
+      border-bottom: var(--vsa-border);
+    }
+  }
+}

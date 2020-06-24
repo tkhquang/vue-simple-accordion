@@ -1,0 +1,43 @@
+/* Reset the button styles */
+@mixin reset-button {
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: 100%;
+  line-height: 1.15;
+  border-width: 0;
+  background-color: transparent;
+  background-image: none;
+  overflow: visible;
+  text-transform: none;
+  
+  &[role="button"] {
+    cursor: pointer;
+  }
+
+  &[type="button"],
+  &[type="reset"],
+  &[type="submit"] {
+    -webkit-appearance: button;
+  }
+
+  &:focus {
+    outline: 1px dotted;
+    outline: 5px auto -webkit-focus-ring-color;
+  }
+  
+  &::-moz-focus-inner,
+  &[type="button"]::-moz-focus-inner,
+  &[type="reset"]::-moz-focus-inner,
+  &[type="submit"]::-moz-focus-inner {
+    border-style: none;
+    padding: 0;
+  }
+  &:-moz-focusring,
+  &[type="button"]:-moz-focusring,
+  &[type="reset"]:-moz-focusring,
+  &[type="submit"]:-moz-focusring {
+    outline: 1px dotted ButtonText;
+  }
+}

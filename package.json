@@ -1,0 +1,68 @@
+{
+  "name": "vue-simple-accordion",
+  "version": "0.0.1",
+  "description": "A simple, easily configurable accordion for Vue 2.x",
+  "author": "Quang Trinh <khacquang.trinh@gmail.com>",
+  "keywords": [
+    "vue",
+    "vuejs",
+    "javascript",
+    "vue-component",
+    "accordion"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tkhquang/vue-simple-accordion.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tkhquang/vue-simple-accordion/issues"
+  },
+  "scripts": {
+    "dev": "cd docs-src && vue-cli-service serve ./src/main.js",
+    "add:docs": "cd docs-src && yarn add",
+    "build:docs": "cd docs-src && vue-cli-service build",
+    "build": "vue-cli-service build --target lib --name vue-simple-accordion src/index.js && rm ./dist/demo.html",
+    "lint": "vue-cli-service lint",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "main": "dist/vue-simple-accordion.umd.js",
+  "module": "dist/vue-simple-accordion.common.js",
+  "unpkg": "dist/vue-simple-accordion.umd.min.js",
+  "css": "dist/vue-simple-accordion.css",
+  "files": [
+    "dist/*.js",
+    "dist/*.css",
+    "src/*"
+  ],
+  "dependencies": {
+    "lodash.merge": "^4.6.2"
+  },
+  "peerDependencies": {
+    "vue": "^2.6.11"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.4.0",
+    "@vue/cli-plugin-eslint": "~4.4.0",
+    "@vue/cli-service": "~4.4.0",
+    "babel-eslint": "^10.1.0",
+    "core-js": "^3.6.5",
+    "eslint": "^7.3.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-loader": "^4.0.2",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-vue": "^6.2.2",
+    "node-sass": "^4.14.1",
+    "postcss-loader": "^3.0.0",
+    "prettier": "^2.0.5",
+    "sass": "^1.26.8",
+    "sass-loader": "^8.0.2",
+    "stylelint": "^13.6.1",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-recommended": "^3.0.0",
+    "stylelint-config-recommended-scss": "^4.2.0",
+    "stylelint-scss": "^3.18.0",
+    "vue": "^2.6.11",
+    "vue-template-compiler": "^2.6.11"
+  }
+}

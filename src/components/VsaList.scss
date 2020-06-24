@@ -1,0 +1,51 @@
+.vsa-fade-enter-active,
+.vsa-fade-leave-active {
+  transition-property: all;
+  transition-duration: 150ms;
+}
+
+.vsa-fade-enter-active {
+  transition-delay: 150ms;
+}
+
+.vsa-fade-enter,
+.vsa-fade-leave-active {
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.vsa-list {
+  /* CSS Variables */
+  --vsa-max-width: 720px;
+  --vsa-min-width: 300px;
+  --vsa-heading-padding: 1rem 1rem;
+  --vsa-text-color: rgba(55, 55, 55, 1);
+  --vsa-highlight-color: rgba(85, 119, 170, 1);
+  --vsa-bg-color: rgba(255, 255, 255, 1);
+  --vsa-border-color: rgba(0, 0, 0, 0.2);
+  --vsa-border-width: 1px;
+  --vsa-border-style: solid;
+  --vsa-border: var(--vsa-border-width) var(--vsa-border-style) var(--vsa-border-color);
+  --vsa-content-padding: 1rem 1rem;
+  --vsa-default-icon-size: 1;
+
+  [hidden] {
+    display: none;
+  }
+
+  display: block;
+  max-width: var(--vsa-max-width);
+  min-width: var(--vsa-min-width);
+  width: 100%;
+
+  /* Reset the list styles */  
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  border: var(--vsa-border);
+  color: var(--vsa-text-color);
+  background-color: var(--vsa-bg-color);
+}
