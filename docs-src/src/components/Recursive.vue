@@ -162,10 +162,15 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .recursive-sample {
   --vsa-highlight-color: rgba(85, 170, 119, 1);
   --vsa-max-width: 720px;
+  --vsa-default-icon-size: 0.8;
   margin: 1rem auto;
+  .vsa-list {
+    --vsa-heading-padding: 0.75rem;
+    --vsa-default-icon-size: 0.6;
+  }
 }
 </style>

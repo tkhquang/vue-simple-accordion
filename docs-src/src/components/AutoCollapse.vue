@@ -49,6 +49,7 @@ export default {
 .auto-collapse {
   --vsa-highlight-color: rgba(85, 170, 119, 1);
   --vsa-max-width: 720px;
+  --vsa-default-icon-size: 0.8;
   margin: 1rem auto;
 }
 </style>

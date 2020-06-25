@@ -101,6 +101,7 @@ export default {
 .toggle-all {
   --vsa-highlight-color: rgba(177, 119, 77, 1);
   --vsa-max-width: 720px;
+  --vsa-default-icon-size: 0.8;
   margin: 1rem auto;
 }
 </style>

@@ -109,6 +109,7 @@ methods: {
 <style lang="scss" scoped>
 .return-value {
   --vsa-max-width: 720px;
+  --vsa-default-icon-size: 0.8;
   margin: 1rem auto;
 }
 .result-panel {

@@ -1,12 +1,17 @@
 <template>
   <div class="container">
     <nav class="navigation">
-      <ul>
-        <li v-for="example in listOfExamples" :key="example.id">
+      <ul class="navigation__list">
+        <li
+          v-for="example in listOfExamples"
+          :key="example.id"
+          class="navigation__item"
+        >
           <a
             :href="`#${example.id}`"
             :name="`#${example.id}`"
-            @click.prevent="(e) => handleAnchorClick(example.id)"
+            class="navigation__item__link"
+            @click="(e) => handleAnchorClick(example.id)"
           >
             {{ example.text }}
           </a>
@@ -98,6 +103,13 @@ export default {
     };
   },
 
+  mounted() {
+    const hash = window.location.hash;
+    if (hash) {
+      this.handleAnchorClick(hash.replace("#", ""));
+    }
+  },
+
   methods: {
     scrollToElement(el) {
       // Wait for transition effects to finish
@@ -114,7 +126,6 @@ export default {
     handleAnchorClick(id) {
       const el = document.getElementById(id);
       if (el.dataset.vsaActive === "true") {
-        this.scrollToElement(el);
         return;
       }
       el.querySelector(".vsa-item__heading > .vsa-item__trigger").click();
@@ -128,18 +139,48 @@ export default {
   position: relative;
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   overflow: visible;
 }
 
 .navigation {
-  position: sticky;
-  display: inline-block;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: static;
   top: 0;
-  bottom: 0;
   left: 0;
-  width: 30%;
+  bottom: 0;
+  background-color: #ffffff;
+  z-index: 1;
+
+  .navigation__list {
+    max-width: 320px;
+    list-style: none;
+    margin: 1rem;
+    padding: 0;
+
+    .navigation__item {
+      margin: 0;
+      padding: 0;
+      &__link {
+        display: block;
+        margin: 1rem 0;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 720px) {
+  .container {
+    flex-direction: row;
+  }
+
+  .navigation {
+    position: sticky;
+  }
 }
 
 .code-snippet {
@@ -147,10 +188,11 @@ export default {
 }
 
 .example-list {
-  width: 70%;
+  flex: 1 0 70%;
+
   &.vsa-list {
     --vsa-max-width: 100%;
-    --vsa-min-width: 70%;
+    --vsa-min-width: 300px;
     --vsa-content-padding: 0;
     --vsa-heading-padding: 0.25rem 1rem;
     --vsa-default-icon-size: 0.6;
@@ -179,6 +221,7 @@ export default {
     & > .vsa-item__content {
       max-width: 720px;
       margin: 1rem auto;
+      padding: 0 1rem;
     }
   }
 }

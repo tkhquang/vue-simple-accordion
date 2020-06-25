@@ -106,6 +106,7 @@ export default {
 <style lang="scss" scoped>
 .filter-active {
   --vsa-max-width: 720px;
+  --vsa-default-icon-size: 0.8;
   margin: 1rem auto;
 }
 </style>
