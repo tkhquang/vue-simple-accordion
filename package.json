@@ -1,6 +1,6 @@
 {
   "name": "vue-simple-accordion",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple, easily configurable accordion for Vue 2.x",
   "author": "Quang Trinh <khacquang.trinh@gmail.com>",
   "keywords": [
