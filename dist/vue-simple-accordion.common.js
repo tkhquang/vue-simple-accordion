@@ -6024,7 +6024,6 @@ var VsaList = __webpack_require__("3d02");
 /* harmony default export */ var src_0 = ({
   install: function install(Vue) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    console.log(options);
     Vue.prototype.$vsaOptions = lodash_merge_default()({}, constants_default, options);
     Object.entries(components_namespaceObject).forEach(function (_ref) {
       var _ref2 = _slicedToArray(_ref, 2),
