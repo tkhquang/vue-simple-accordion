@@ -1,5 +1,6 @@
 import merge from "lodash.merge";
 
+import { DEFAULT_OPTIONS } from "./../constants";
 import "./VsaList.scss";
 
 export default {
@@ -64,7 +65,7 @@ export default {
 
   methods: {
     getMergedOptions() {
-      return merge({}, this.$vsaOptions, this.$props);
+      return merge({}, DEFAULT_OPTIONS, this.$vsaOptions, this.$props);
     }
   },
 

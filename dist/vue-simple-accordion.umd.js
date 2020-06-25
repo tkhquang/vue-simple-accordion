@@ -5450,6 +5450,31 @@ function _objectSpread2(target) {
 
   return target;
 }
+// CONCATENATED MODULE: ./src/constants/default.js
+var DEFAULT_OPTIONS = {
+  tags: {
+    list: "dl",
+    list__item: "div",
+    item__heading: "dt",
+    heading__content: "span",
+    heading__icon: "span",
+    item__content: "dd"
+  },
+  roles: {
+    presentation: false,
+    heading: true,
+    region: true
+  },
+  transition: "vsa-fade",
+  initActive: false,
+  forceActive: undefined,
+  autoCollapse: true,
+  navigation: true
+};
+/* harmony default export */ var constants_default = (DEFAULT_OPTIONS);
+// CONCATENATED MODULE: ./src/constants/index.js
+
+
 // EXTERNAL MODULE: ./src/components/Heading/Heading.scss
 var Heading = __webpack_require__("9455");
 
@@ -5644,6 +5669,7 @@ var VsaItem = __webpack_require__("64c0");
 
 
 
+
 /* harmony default export */ var components_VsaItem = ({
   props: {
     transition: {
@@ -5716,7 +5742,7 @@ var VsaItem = __webpack_require__("64c0");
   },
   methods: {
     getMergedOptions: function getMergedOptions() {
-      return lodash_merge_default()({}, this.$vsaOptions, this.vsaList.$props, this.$props);
+      return lodash_merge_default()({}, constants_default, this.$vsaOptions, this.vsaList.$props, this.$props);
     },
     getComponent: function getComponent(name) {
       try {
@@ -5906,6 +5932,7 @@ var VsaList = __webpack_require__("3d02");
 
 
 
+
 /* harmony default export */ var components_VsaList = ({
   props: {
     tags: {
@@ -5966,7 +5993,7 @@ var VsaList = __webpack_require__("3d02");
   },
   methods: {
     getMergedOptions: function getMergedOptions() {
-      return lodash_merge_default()({}, this.$vsaOptions, this.$props);
+      return lodash_merge_default()({}, constants_default, this.$vsaOptions, this.$props);
     }
   },
   created: function created() {
@@ -5992,31 +6019,6 @@ var VsaList = __webpack_require__("3d02");
 // CONCATENATED MODULE: ./src/components/index.js
 
 
-
-
-// CONCATENATED MODULE: ./src/constants/default.js
-var DEFAULT_OPTIONS = {
-  tags: {
-    list: "dl",
-    list__item: "div",
-    item__heading: "dt",
-    heading__content: "span",
-    heading__icon: "span",
-    item__content: "dd"
-  },
-  roles: {
-    presentation: false,
-    heading: true,
-    region: true
-  },
-  transition: "vsa-fade",
-  initActive: false,
-  forceActive: undefined,
-  autoCollapse: true,
-  navigation: true
-};
-/* harmony default export */ var constants_default = (DEFAULT_OPTIONS);
-// CONCATENATED MODULE: ./src/constants/index.js
 
 
 // CONCATENATED MODULE: ./src/index.js

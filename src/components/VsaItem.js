@@ -1,5 +1,6 @@
 import merge from "lodash.merge";
 
+import { DEFAULT_OPTIONS } from "./../constants";
 import {
   // Force chomp
   Heading,
@@ -88,7 +89,13 @@ export default {
 
   methods: {
     getMergedOptions() {
-      return merge({}, this.$vsaOptions, this.vsaList.$props, this.$props);
+      return merge(
+        {},
+        DEFAULT_OPTIONS,
+        this.$vsaOptions,
+        this.vsaList.$props,
+        this.$props
+      );
     },
 
     getComponent(name) {
