@@ -88,7 +88,7 @@ With the default options, the html will be generated as:
     id="vsa-item-{item_id}"
     class="vsa-item vsa-item--is-active"
     data-vsa-list="{list_id}"
-    data-vsa-item="{{item_id}}",
+    data-vsa-item="{item_id}",
     data-vsa-active="true"
   >
     <dt
@@ -101,7 +101,6 @@ With the default options, the html will be generated as:
         type="button"
         aria-expanded="true"
         aria-controls="{item_id}"
-        aria-disabled="false"
         {data_attrs}
       >
         <span

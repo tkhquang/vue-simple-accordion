@@ -101,8 +101,9 @@ export default {
     getComponent(name) {
       try {
         const wrapper = this.$slots.default.find((slot) => {
-          if (slot.componentOptions != undefined)
+          if (typeof slot.componentOptions !== "undefined") {
             return new slot.componentOptions.Ctor().$options.name === name;
+          }
         });
 
         if (!wrapper) {
@@ -112,7 +113,7 @@ export default {
         const children = wrapper.componentOptions.children;
 
         if (children) {
-          return wrapper.componentOptions.children;
+          return children;
         }
 
         return [wrapper];
