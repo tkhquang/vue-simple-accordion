@@ -5738,7 +5738,9 @@ var VsaItem = __webpack_require__("64c0");
     getComponent: function getComponent(name) {
       try {
         var wrapper = this.$slots["default"].find(function (slot) {
-          return new slot.componentOptions.Ctor().$options.name === name;
+          if (typeof slot.componentOptions !== "undefined") {
+            return new slot.componentOptions.Ctor().$options.name === name;
+          }
         });
 
         if (!wrapper) {
@@ -5748,7 +5750,7 @@ var VsaItem = __webpack_require__("64c0");
         var children = wrapper.componentOptions.children;
 
         if (children) {
-          return wrapper.componentOptions.children;
+          return children;
         }
 
         return [wrapper];
