@@ -112,7 +112,7 @@ export default {
         const children = wrapper.componentOptions.children;
 
         if (children) {
-          return wrapper.componentOptions.children;
+          return children;
         }
 
         return [wrapper];
