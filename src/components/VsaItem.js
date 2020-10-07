@@ -29,6 +29,11 @@ export default {
       required: false,
       default: undefined
     },
+    level: {
+      type: [String, Number],
+      required: false,
+      default: undefined
+    },
     onHeadingClick: {
       type: Function,
       required: false,
@@ -60,6 +65,26 @@ export default {
 
     mergedOptions() {
       return this.getMergedOptions();
+    },
+
+    dataAttrs() {
+      return this.getDataAttrs();
+    },
+
+    tags() {
+      return this.mergedOptions.tags;
+    },
+
+    headingData() {
+      return this.getComponent("VsaHeading");
+    },
+
+    iconData() {
+      return this.getComponent("VsaIcon");
+    },
+
+    contentData() {
+      return this.getComponent("VsaContent");
     }
   },
 
@@ -80,10 +105,15 @@ export default {
     }
   },
 
+  beforeDestroy() {
+    this.vsaList.$emit("on-child-removed", this);
+  },
+
   created() {
     this.$on("vsa-heading-click", (arg) => {
       this.onHeadingClick(arg);
     });
+
     this.vsaList.$emit("on-child-created", this);
   },
 
@@ -216,19 +246,12 @@ export default {
   },
 
   render(h) {
-    const headingData = this.getComponent("VsaHeading");
-    const iconData = this.getComponent("VsaIcon");
-    const contentData = this.getComponent("VsaContent");
-    const dataAttrs = this.getDataAttrs();
-
-    const tags = this.mergedOptions.tags;
-
     return h(
-      tags["list__item"],
+      this.tags["list__item"],
       {
         attrs: {
           id: `vsa-item-${this._uid}`,
-          ...dataAttrs
+          ...this.dataAttrs
         },
         staticClass: "vsa-item",
         class: {
@@ -242,13 +265,14 @@ export default {
           Heading,
           {
             attrs: {
-              ...dataAttrs,
+              ...this.dataAttrs,
               ...(this.mergedOptions.roles["heading"] && {
-                role: "heading"
+                role: "heading",
+                "aria-level": String(this.level)
               })
             },
             props: {
-              tag: tags["item__heading"]
+              tag: this.tags["item__heading"]
             }
           },
           [
@@ -263,8 +287,8 @@ export default {
                   isActive: this.isActive
                 },
                 attrs: {
-                  ...dataAttrs,
-                  "aria-controls": `vsa-item-${this._uid}`,
+                  ...this.dataAttrs,
+                  "aria-controls": `vsa-panel-${this._uid}`,
                   "aria-disabled": String(
                     !!(this.isActive && this.mergedOptions.forceActive)
                   )
@@ -273,31 +297,31 @@ export default {
               [
                 h(TriggerContent, {
                   attrs: {
-                    ...dataAttrs
+                    ...this.dataAttrs
                   },
                   props: {
-                    tag: tags["heading__content"],
-                    data: headingData
+                    tag: this.tags["heading__content"],
+                    data: this.headingData
                   }
                 }),
                 h(TriggerIcon, {
                   attrs: {
-                    ...dataAttrs
+                    ...this.dataAttrs
                   },
                   props: {
-                    tag: tags["heading__icon"],
+                    tag: this.tags["heading__icon"],
                     isActive: this.isActive,
-                    data: iconData
+                    data: this.iconData
                   }
                 })
               ]
             )
           ]
         ),
-
         h(Content, {
           attrs: {
-            ...dataAttrs,
+            id: `vsa-panel-${this._uid}`,
+            ...this.dataAttrs,
             ...(this.mergedOptions.roles["region"] && {
               role: "region"
             }),
@@ -305,9 +329,9 @@ export default {
           },
           props: {
             transition: this.mergedOptions.transition,
-            tag: tags["item__content"],
+            tag: this.tags["item__content"],
             isActive: this.isActive,
-            data: contentData
+            data: this.contentData
           }
         })
       ]

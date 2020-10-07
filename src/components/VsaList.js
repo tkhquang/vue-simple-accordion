@@ -70,8 +70,14 @@ export default {
   },
 
   created() {
-    this.$on("on-child-created", (child) => {
-      this.children.push(child);
+    this.$on("on-child-created", (newChild) => {
+      this.children.push(newChild);
+    });
+
+    this.$on("on-child-removed", (removedChild) => {
+      this.children = this.children.filter(
+        (child) => child._uid !== removedChild._uid
+      );
     });
   },
 

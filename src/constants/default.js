@@ -9,10 +9,10 @@ const DEFAULT_OPTIONS = {
   },
   roles: {
     presentation: false,
-    heading: true,
+    heading: false,
     region: true
   },
-  transition: "vsa-fade",
+  transition: "vsa-collapse",
   initActive: false,
   forceActive: undefined,
   autoCollapse: true,
