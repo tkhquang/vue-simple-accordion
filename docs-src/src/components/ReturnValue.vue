@@ -19,9 +19,7 @@
       </vsa-item>
     </vsa-list>
     <div class="result-panel">
-      <div>
-        You have just clicked:
-      </div>
+      <div>You have just clicked:</div>
       <prism language="markup" :code="element" />
     </div>
   </div>

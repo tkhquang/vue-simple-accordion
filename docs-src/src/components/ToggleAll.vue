@@ -4,15 +4,9 @@
       <prism language="markup" :code="template" />
     </div>
     <div>
-      <button type="button" @click="forceActive = true">
-        Expand All
-      </button>
-      <button type="button" @click="forceActive = false">
-        Collapse All
-      </button>
-      <button type="button" @click="forceActive = !forceActive">
-        Toggle
-      </button>
+      <button type="button" @click="forceActive = true">Expand All</button>
+      <button type="button" @click="forceActive = false">Collapse All</button>
+      <button type="button" @click="forceActive = !forceActive">Toggle</button>
     </div>
 
     <vsa-list

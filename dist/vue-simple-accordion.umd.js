@@ -1003,6 +1003,51 @@ module.exports = getBuiltIn('Reflect', 'ownKeys') || function ownKeys(it) {
 
 /***/ }),
 
+/***/ "5899":
+/***/ (function(module, exports) {
+
+// a string of all valid unicode whitespaces
+// eslint-disable-next-line max-len
+module.exports = '\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
+
+
+/***/ }),
+
+/***/ "58a8":
+/***/ (function(module, exports, __webpack_require__) {
+
+var requireObjectCoercible = __webpack_require__("1d80");
+var whitespaces = __webpack_require__("5899");
+
+var whitespace = '[' + whitespaces + ']';
+var ltrim = RegExp('^' + whitespace + whitespace + '*');
+var rtrim = RegExp(whitespace + whitespace + '*$');
+
+// `String.prototype.{ trim, trimStart, trimEnd, trimLeft, trimRight }` methods implementation
+var createMethod = function (TYPE) {
+  return function ($this) {
+    var string = String(requireObjectCoercible($this));
+    if (TYPE & 1) string = string.replace(ltrim, '');
+    if (TYPE & 2) string = string.replace(rtrim, '');
+    return string;
+  };
+};
+
+module.exports = {
+  // `String.prototype.{ trimLeft, trimStart }` methods
+  // https://tc39.github.io/ecma262/#sec-string.prototype.trimstart
+  start: createMethod(1),
+  // `String.prototype.{ trimRight, trimEnd }` methods
+  // https://tc39.github.io/ecma262/#sec-string.prototype.trimend
+  end: createMethod(2),
+  // `String.prototype.trim` method
+  // https://tc39.github.io/ecma262/#sec-string.prototype.trim
+  trim: createMethod(3)
+};
+
+
+/***/ }),
+
 /***/ "5c6c":
 /***/ (function(module, exports) {
 
@@ -1258,6 +1303,30 @@ module.exports = {
   // `Object.values` method
   // https://tc39.github.io/ecma262/#sec-object.values
   values: createMethod(false)
+};
+
+
+/***/ }),
+
+/***/ "7156":
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__("861d");
+var setPrototypeOf = __webpack_require__("d2bb");
+
+// makes subclassing work correct for wrapped built-ins
+module.exports = function ($this, dummy, Wrapper) {
+  var NewTarget, NewTargetPrototype;
+  if (
+    // it can work only with native `setPrototypeOf`
+    setPrototypeOf &&
+    // we haven't completely correct pre-ES6 way for getting `new.target`, so use this
+    typeof (NewTarget = dummy.constructor) == 'function' &&
+    NewTarget !== Wrapper &&
+    isObject(NewTargetPrototype = NewTarget.prototype) &&
+    NewTargetPrototype !== Wrapper.prototype
+  ) setPrototypeOf($this, NewTargetPrototype);
+  return $this;
 };
 
 
@@ -2227,6 +2296,92 @@ var floor = Math.floor;
 module.exports = function (argument) {
   return isNaN(argument = +argument) ? 0 : (argument > 0 ? floor : ceil)(argument);
 };
+
+
+/***/ }),
+
+/***/ "a9e3":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var DESCRIPTORS = __webpack_require__("83ab");
+var global = __webpack_require__("da84");
+var isForced = __webpack_require__("94ca");
+var redefine = __webpack_require__("6eeb");
+var has = __webpack_require__("5135");
+var classof = __webpack_require__("c6b6");
+var inheritIfRequired = __webpack_require__("7156");
+var toPrimitive = __webpack_require__("c04e");
+var fails = __webpack_require__("d039");
+var create = __webpack_require__("7c73");
+var getOwnPropertyNames = __webpack_require__("241c").f;
+var getOwnPropertyDescriptor = __webpack_require__("06cf").f;
+var defineProperty = __webpack_require__("9bf2").f;
+var trim = __webpack_require__("58a8").trim;
+
+var NUMBER = 'Number';
+var NativeNumber = global[NUMBER];
+var NumberPrototype = NativeNumber.prototype;
+
+// Opera ~12 has broken Object#toString
+var BROKEN_CLASSOF = classof(create(NumberPrototype)) == NUMBER;
+
+// `ToNumber` abstract operation
+// https://tc39.github.io/ecma262/#sec-tonumber
+var toNumber = function (argument) {
+  var it = toPrimitive(argument, false);
+  var first, third, radix, maxCode, digits, length, index, code;
+  if (typeof it == 'string' && it.length > 2) {
+    it = trim(it);
+    first = it.charCodeAt(0);
+    if (first === 43 || first === 45) {
+      third = it.charCodeAt(2);
+      if (third === 88 || third === 120) return NaN; // Number('+0x1') should be NaN, old V8 fix
+    } else if (first === 48) {
+      switch (it.charCodeAt(1)) {
+        case 66: case 98: radix = 2; maxCode = 49; break; // fast equal of /^0b[01]+$/i
+        case 79: case 111: radix = 8; maxCode = 55; break; // fast equal of /^0o[0-7]+$/i
+        default: return +it;
+      }
+      digits = it.slice(2);
+      length = digits.length;
+      for (index = 0; index < length; index++) {
+        code = digits.charCodeAt(index);
+        // parseInt parses a string to a first unavailable symbol
+        // but ToNumber should return NaN if a string contains unavailable symbols
+        if (code < 48 || code > maxCode) return NaN;
+      } return parseInt(digits, radix);
+    }
+  } return +it;
+};
+
+// `Number` constructor
+// https://tc39.github.io/ecma262/#sec-number-constructor
+if (isForced(NUMBER, !NativeNumber(' 0o1') || !NativeNumber('0b1') || NativeNumber('+0x1'))) {
+  var NumberWrapper = function Number(value) {
+    var it = arguments.length < 1 ? 0 : value;
+    var dummy = this;
+    return dummy instanceof NumberWrapper
+      // check on 1..constructor(foo) case
+      && (BROKEN_CLASSOF ? fails(function () { NumberPrototype.valueOf.call(dummy); }) : classof(dummy) != NUMBER)
+        ? inheritIfRequired(new NativeNumber(toNumber(it)), dummy, NumberWrapper) : toNumber(it);
+  };
+  for (var keys = DESCRIPTORS ? getOwnPropertyNames(NativeNumber) : (
+    // ES3:
+    'MAX_VALUE,MIN_VALUE,NaN,NEGATIVE_INFINITY,POSITIVE_INFINITY,' +
+    // ES2015 (in case, if modules with ES2015 Number statics required before):
+    'EPSILON,isFinite,isInteger,isNaN,isSafeInteger,MAX_SAFE_INTEGER,' +
+    'MIN_SAFE_INTEGER,parseFloat,parseInt,isInteger'
+  ).split(','), j = 0, key; keys.length > j; j++) {
+    if (has(NativeNumber, key = keys[j]) && !has(NumberWrapper, key)) {
+      defineProperty(NumberWrapper, key, getOwnPropertyDescriptor(NativeNumber, key));
+    }
+  }
+  NumberWrapper.prototype = NumberPrototype;
+  NumberPrototype.constructor = NumberWrapper;
+  redefine(global, NUMBER, NumberWrapper);
+}
 
 
 /***/ }),
@@ -5335,41 +5490,21 @@ var lodash_merge = __webpack_require__("da81");
 var lodash_merge_default = /*#__PURE__*/__webpack_require__.n(lodash_merge);
 
 // CONCATENATED MODULE: ./src/components/VsaWrapper.js
-var Wrapper = {
-  extend: {
-    props: {
-      tag: {
-        type: String,
-        required: false,
-        "default": "div"
-      }
-    },
-    render: function render(h) {
-      return h(this.tag, this.$slots["default"]);
-    }
-  }
-};
 var VsaHeading = {
-  components: {
-    Wrapper: Wrapper
-  },
   name: "VsaHeading"
 };
 var VsaContent = {
-  components: {
-    Wrapper: Wrapper
-  },
   name: "VsaContent"
 };
 var VsaIcon = {
-  components: {
-    Wrapper: Wrapper
-  },
   name: "VsaIcon"
 };
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.find.js
 var es_array_find = __webpack_require__("7db0");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.number.constructor.js
+var es_number_constructor = __webpack_require__("a9e3");
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.filter.js
 var es_array_filter = __webpack_require__("4de4");
@@ -5462,10 +5597,10 @@ var DEFAULT_OPTIONS = {
   },
   roles: {
     presentation: false,
-    heading: true,
+    heading: false,
     region: true
   },
-  transition: "vsa-fade",
+  transition: "vsa-collapse",
   initActive: false,
   forceActive: undefined,
   autoCollapse: true,
@@ -5670,6 +5805,7 @@ var VsaItem = __webpack_require__("64c0");
 
 
 
+
 /* harmony default export */ var components_VsaItem = ({
   props: {
     transition: {
@@ -5684,6 +5820,11 @@ var VsaItem = __webpack_require__("64c0");
     },
     initActive: {
       type: Boolean,
+      required: false,
+      "default": undefined
+    },
+    level: {
+      type: [String, Number],
       required: false,
       "default": undefined
     },
@@ -5714,6 +5855,21 @@ var VsaItem = __webpack_require__("64c0");
     },
     mergedOptions: function mergedOptions() {
       return this.getMergedOptions();
+    },
+    dataAttrs: function dataAttrs() {
+      return this.getDataAttrs();
+    },
+    tags: function tags() {
+      return this.mergedOptions.tags;
+    },
+    headingData: function headingData() {
+      return this.getComponent("VsaHeading");
+    },
+    iconData: function iconData() {
+      return this.getComponent("VsaIcon");
+    },
+    contentData: function contentData() {
+      return this.getComponent("VsaContent");
     }
   },
   watch: {
@@ -5731,6 +5887,9 @@ var VsaItem = __webpack_require__("64c0");
       deep: true,
       immediate: true
     }
+  },
+  beforeDestroy: function beforeDestroy() {
+    this.vsaList.$emit("on-child-removed", this);
   },
   created: function created() {
     var _this = this;
@@ -5865,15 +6024,10 @@ var VsaItem = __webpack_require__("64c0");
     }
   },
   render: function render(h) {
-    var headingData = this.getComponent("VsaHeading");
-    var iconData = this.getComponent("VsaIcon");
-    var contentData = this.getComponent("VsaContent");
-    var dataAttrs = this.getDataAttrs();
-    var tags = this.mergedOptions.tags;
-    return h(tags["list__item"], {
+    return h(this.tags["list__item"], {
       attrs: _objectSpread2({
         id: "vsa-item-".concat(this._uid)
-      }, dataAttrs),
+      }, this.dataAttrs),
       staticClass: "vsa-item",
       "class": {
         "vsa-item--is-active": this.isActive
@@ -5881,11 +6035,12 @@ var VsaItem = __webpack_require__("64c0");
       style: this.styles,
       ref: "vsa-item"
     }, [h(Heading_Heading, {
-      attrs: _objectSpread2(_objectSpread2({}, dataAttrs), this.mergedOptions.roles["heading"] && {
-        role: "heading"
+      attrs: _objectSpread2(_objectSpread2({}, this.dataAttrs), this.mergedOptions.roles["heading"] && {
+        role: "heading",
+        "aria-level": String(this.level)
       }),
       props: {
-        tag: tags["item__heading"]
+        tag: this.tags["item__heading"]
       }
     }, [h(Trigger_Trigger, {
       nativeOn: {
@@ -5895,34 +6050,36 @@ var VsaItem = __webpack_require__("64c0");
       props: {
         isActive: this.isActive
       },
-      attrs: _objectSpread2(_objectSpread2({}, dataAttrs), {}, {
-        "aria-controls": "vsa-item-".concat(this._uid),
+      attrs: _objectSpread2(_objectSpread2({}, this.dataAttrs), {}, {
+        "aria-controls": "vsa-panel-".concat(this._uid),
         "aria-disabled": String(!!(this.isActive && this.mergedOptions.forceActive))
       })
     }, [h(Trigger_TriggerContent, {
-      attrs: _objectSpread2({}, dataAttrs),
+      attrs: _objectSpread2({}, this.dataAttrs),
       props: {
-        tag: tags["heading__content"],
-        data: headingData
+        tag: this.tags["heading__content"],
+        data: this.headingData
       }
     }), h(Trigger_TriggerIcon, {
-      attrs: _objectSpread2({}, dataAttrs),
+      attrs: _objectSpread2({}, this.dataAttrs),
       props: {
-        tag: tags["heading__icon"],
+        tag: this.tags["heading__icon"],
         isActive: this.isActive,
-        data: iconData
+        data: this.iconData
       }
     })])]), h(Content_Content, {
-      attrs: _objectSpread2(_objectSpread2(_objectSpread2({}, dataAttrs), this.mergedOptions.roles["region"] && {
+      attrs: _objectSpread2(_objectSpread2(_objectSpread2({
+        id: "vsa-panel-".concat(this._uid)
+      }, this.dataAttrs), this.mergedOptions.roles["region"] && {
         role: "region"
       }), {}, {
         "aria-labelledby": "vsa-item-".concat(this._uid)
       }),
       props: {
         transition: this.mergedOptions.transition,
-        tag: tags["item__content"],
+        tag: this.tags["item__content"],
         isActive: this.isActive,
-        data: contentData
+        data: this.contentData
       }
     })]);
   }
@@ -5931,6 +6088,7 @@ var VsaItem = __webpack_require__("64c0");
 var VsaList = __webpack_require__("3d02");
 
 // CONCATENATED MODULE: ./src/components/VsaList.js
+
 
 
 
@@ -6001,8 +6159,13 @@ var VsaList = __webpack_require__("3d02");
   created: function created() {
     var _this2 = this;
 
-    this.$on("on-child-created", function (child) {
-      _this2.children.push(child);
+    this.$on("on-child-created", function (newChild) {
+      _this2.children.push(newChild);
+    });
+    this.$on("on-child-removed", function (removedChild) {
+      _this2.children = _this2.children.filter(function (child) {
+        return child._uid !== removedChild._uid;
+      });
     });
   },
   render: function render(h) {

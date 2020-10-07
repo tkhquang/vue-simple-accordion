@@ -1,19 +1,17 @@
-.vsa-fade-enter-active,
-.vsa-fade-leave-active {
-  transition-property: all;
-  transition-duration: 150ms;
+.vsa-collapse-enter-active,
+.vsa-collapse-leave-active {
+  transition-property: opacity, height, padding-top, padding-bottom;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
 }
 
-.vsa-fade-enter-active {
-  transition-delay: 150ms;
-}
-
-.vsa-fade-enter,
-.vsa-fade-leave-active {
+.vsa-collapse-enter,
+.vsa-collapse-leave-active {
   opacity: 0;
-  max-height: 0;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
+  height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: hidden;
 }
 
 .vsa-list {

@@ -93,14 +93,13 @@ With the default options, the html will be generated as:
   >
     <dt
       class="vsa-item__heading"
-      role="heading"
       {data_attrs}
     >
       <button
         class="vsa-item__trigger"
         type="button"
         aria-expanded="true"
-        aria-controls="{item_id}"
+        aria-controls="vsa-panel-{item_id}"
         {data_attrs}
       >
         <span
@@ -117,6 +116,7 @@ With the default options, the html will be generated as:
       </button>
     </dt>
     <dd
+      id="vsa-panel-{item_id}"
       class="vsa-item__content"
       role="region"
       aria-labelledby="vsa-item-{item_id}"
@@ -130,7 +130,7 @@ With the default options, the html will be generated as:
 
 ## Available Options
 
-All user options or component props if not set (or are `undefined`) will be fallback to these default values:
+All user options or component props if not set (or are `undefined`) will automatically fallback to these default values:
 
 ###### Default Options
 ```javascript
@@ -145,10 +145,10 @@ All user options or component props if not set (or are `undefined`) will be fall
   },
   roles: {
     presentation: false,
-    heading: true,
+    heading: false,
     region: true
   },
-  transition: "vsa-fade",
+  transition: "vsa-collapse",
   initActive: false,
   forceActive: undefined,
   autoCollapse: true,
@@ -178,6 +178,7 @@ All user options or component props if not set (or are `undefined`) will be fall
 | transition     | String   | Name of the entering/leaving transition effects for the curren item                                                                  |
 | initActive     | Boolean  | Expand the current item by default or not                                                                                            |
 | forceActive    | Boolean  | When set, this will force the current item to be expanded or collapsed                                                               |
+| level          | String \| Number | Identify `aria-level` while using `heading: true` |
 | onHeadingClick | Function | A function will be called automatically when the trigger button is clicked with the arguments contain data of the list and that item |
 
 **Priotiry:** ***Item > List > Default***
