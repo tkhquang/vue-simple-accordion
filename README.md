@@ -25,6 +25,8 @@ yarn add vue-simple-accordion
 
 ## Import
 
+For single component
+
 ```javascript
 import {
   VsaList,
@@ -49,7 +51,7 @@ export default {
 ```
 
 or
-
+To use globaly in your main.js
 ```javascript
 import VueSimpleAccordion from 'vue-simple-accordion';
 import 'vue-simple-accordion/dist/vue-simple-accordion.css';
